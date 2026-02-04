@@ -122,7 +122,6 @@ public class OceanFleetApp {
         scanner.nextLine();
 
         for (int i = 1; i <= count; i++) {
-
             System.out.println("\nEnter details for Vessel " + i);
 
             System.out.print("Vessel ID: ");
