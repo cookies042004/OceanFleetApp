@@ -144,66 +144,66 @@ public class OceanFleetApp {
         Scanner scanner = new Scanner(System.in);
         VesselUtil vesselUtil = new VesselUtil();
 
-        System.out.print("How many vessels do you want to add? ");
-        int count = scanner.nextInt();
-        scanner.nextLine();
+        // Step 1: Number of vessels
+        System.out.print("Enter number of vessels: ");
+        int count = Integer.parseInt(scanner.nextLine());
 
+        // Step 2: Input vessel details
         for (int i = 1; i <= count; i++) {
-            System.out.println("\nEnter details for Vessel " + i);
 
-            System.out.print("Vessel ID: ");
-            String id = scanner.nextLine();
+            System.out.println("\nEnter vessel details (format: id:name:speed:type)");
+            String input = scanner.nextLine();
 
-            System.out.print("Vessel Name: ");
-            String name = scanner.nextLine();
+            // Step 3: Parse input
+            String[] data = input.split(":");
 
-            System.out.print("Average Speed: ");
-            double speed = scanner.nextDouble();
-            scanner.nextLine();
+            String id = data[0];
+            String name = data[1];
+            double speed = Double.parseDouble(data[2]);
+            String type = data[3];
 
-            System.out.print("Vessel Type: ");
-            String type = scanner.nextLine();
-
+            // Step 4: Create object
             Vessel vessel = new Vessel(id, name, speed, type);
 
+            // Step 5: Store object
             vesselUtil.addVesselPerformance(vessel);
         }
 
-        System.out.println("\nAll Stored Vessel Records:");
-        vesselUtil.displayAllVessels();
-
-        System.out.println("\nSearch Vessel By ID");
-        System.out.print("Enter Vessel ID to search: ");
+        // Step 6: Retrieve vessel by ID
+        System.out.print("\nEnter Vessel ID to search: ");
         String searchId = scanner.nextLine();
 
-        Vessel foundVessel = vesselUtil.getVesselByID(searchId);
+        Vessel found = vesselUtil.getVesselByID(searchId);
 
-        if (foundVessel != null) {
-            System.out.println("Vessel Found:");
-            System.out.println("ID: " + foundVessel.getVesselId());
-            System.out.println("Name: " + foundVessel.getVesselName());
-            System.out.println("Speed: " + foundVessel.getAverageSpeed());
-            System.out.println("Type: " + foundVessel.getVesselType());
+        if (found != null) {
+            System.out.println("\nVessel Found:");
+            printFormatted(found);
         } else {
-            System.out.println("Vessel not found with ID: " + searchId);
+            System.out.println("Vessel not found.");
         }
 
+        // Step 7: Display high-performance vessels
         System.out.println("\nHigh Performance Vessel(s):");
+        List<Vessel> highList = vesselUtil.getHighPerformanceVessels();
 
-        List<Vessel> highPerformanceList = vesselUtil.getHighPerformanceVessels();
-
-        if (highPerformanceList.isEmpty()) {
+        if (highList.isEmpty()) {
             System.out.println("No vessels available.");
         } else {
-            for (Vessel vessel : highPerformanceList) {
-                System.out.println("----------------------------");
-                System.out.println("ID: " + vessel.getVesselId());
-                System.out.println("Name: " + vessel.getVesselName());
-                System.out.println("Speed: " + vessel.getAverageSpeed());
-                System.out.println("Type: " + vessel.getVesselType());
+            for (Vessel vessel : highList) {
+                printFormatted(vessel);
             }
         }
 
         scanner.close();
+    }
+
+    // Helper method for formatted output
+    private static void printFormatted(Vessel vessel) {
+        System.out.println(
+                vessel.getVesselId() + " | " +
+                        vessel.getVesselName() + " | " +
+                        vessel.getVesselType() + " | " +
+                        vessel.getAverageSpeed() + " knots"
+        );
     }
 }
