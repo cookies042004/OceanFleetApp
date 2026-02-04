@@ -1,14 +1,13 @@
 
 /**
- * OceanFleetApp UC3 - Retrieve Vessel by Vessel ID
+ * OceanFleetApp UC4 - Identify High-Performance Vessels.
  *
  * This Store multiple vessel records efficiently in memory.
  * And display vessel records efficiently.
- * The final outcome of this use case is, we will have new feature for
- * searching vessel by its id.
+ * The final outcome of this use case is, we will have HighPerformance Vessel.
  *
  * @Developer
- * @version3.0
+ * @version4.0
  * */
 
 import java.util.ArrayList;
@@ -56,7 +55,35 @@ import java.util.Scanner;
 
         return null;
      }
-}
+
+     // Get High Performance Vessels (Highest Speed)
+     public List<Vessel> getHighPerformanceVessels() {
+
+         List<Vessel> result = new ArrayList<>();
+
+         if (vesselList.isEmpty()) {
+             return result; // return empty list
+         }
+
+         // Step 1: Find maximum speed
+         double maxSpeed = vesselList.get(0).getAverageSpeed();
+
+         for (Vessel vessel : vesselList) {
+             if (vessel.getAverageSpeed() > maxSpeed) {
+                 maxSpeed = vessel.getAverageSpeed();
+             }
+         }
+
+         // Step 2: Collect vessels having maxSpeed
+         for (Vessel vessel : vesselList) {
+             if (vessel.getAverageSpeed() == maxSpeed) {
+                 result.add(vessel);
+             }
+         }
+
+         return result;
+     }
+ }
 
 class Vessel {
     // Instance Variables (Encapsulation: kept private)
@@ -159,6 +186,22 @@ public class OceanFleetApp {
             System.out.println("Type: " + foundVessel.getVesselType());
         } else {
             System.out.println("Vessel not found with ID: " + searchId);
+        }
+
+        System.out.println("\nHigh Performance Vessel(s):");
+
+        List<Vessel> highPerformanceList = vesselUtil.getHighPerformanceVessels();
+
+        if (highPerformanceList.isEmpty()) {
+            System.out.println("No vessels available.");
+        } else {
+            for (Vessel vessel : highPerformanceList) {
+                System.out.println("----------------------------");
+                System.out.println("ID: " + vessel.getVesselId());
+                System.out.println("Name: " + vessel.getVesselName());
+                System.out.println("Speed: " + vessel.getAverageSpeed());
+                System.out.println("Type: " + vessel.getVesselType());
+            }
         }
 
         scanner.close();
