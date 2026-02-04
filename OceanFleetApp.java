@@ -1,20 +1,101 @@
 
 /**
- * OceanFleetApp UC4 - Identify High-Performance Vessels.
+ * OceanFleetApp UC6 - Refactor Using OOPS Principles.
  *
  * This Store multiple vessel records efficiently in memory.
  * And display vessel records efficiently.
- * The final outcome of this use case is, we will have HighPerformance Vessel.
+ * The final outcome of this use case is, we will have modularity and reusability
+ * and OOPS principle are applied.
  *
  * @Developer
- * @version4.0
+ * @version6.0
  * */
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
- class VesselUtil {
+
+class UserInterface{
+    private VesselUtil vesselUtil;
+    private Scanner scanner;
+
+    public UserInterface(){
+        vesselUtil = new VesselUtil();
+        scanner = new Scanner(System.in);
+    }
+
+    public void start(){
+        // Step 1: Number of vessels
+        System.out.print("Enter number of vessels: ");
+        int count = Integer.parseInt(scanner.nextLine());
+
+        // Step 2: Input vessel details
+        for (int i = 1; i <= count; i++) {
+            System.out.println("\nEnter vessel details (format: id:name:speed:type)");
+            String input = scanner.nextLine();
+
+            // Step 3: Parse input
+            String[] data = input.split(":");
+
+            String id = data[0];
+            String name = data[1];
+            double speed = Double.parseDouble(data[2]);
+            String type = data[3];
+
+            // Step 4: Create object
+            Vessel vessel = new Vessel(id, name, speed, type);
+
+            // Step 5: Store object
+            vesselUtil.addVesselPerformance(vessel);
+        }
+
+        handleSearch();
+        displayHighPerformance();
+        scanner.close();
+    }
+
+    private void handleSearch() {
+        // Step 6: Retrieve vessel by ID
+        System.out.print("\nEnter Vessel ID to search: ");
+        String searchId = scanner.nextLine();
+
+        Vessel found = vesselUtil.getVesselByID(searchId);
+
+        if (found != null) {
+            System.out.println("\nVessel Found:");
+            printFormatted(found);
+        } else {
+            System.out.println("Vessel not found.");
+        }
+    }
+
+    private void displayHighPerformance() {
+        System.out.println("\nHigh Performance Vessel(s):");
+
+        List<Vessel> vessels = vesselUtil.getHighPerformanceVessels();
+
+        if (vessels.isEmpty()) {
+            System.out.println("No vessels available.");
+        } else {
+            for (Vessel vessel : vessels) {
+                System.out.println(vessel);
+            }
+        }
+    }
+
+    // Helper method for formatted output
+    private static void printFormatted(Vessel vessel) {
+        System.out.println(
+                vessel.getVesselId() + " | " +
+                        vessel.getVesselName() + " | " +
+                        vessel.getVesselType() + " | " +
+                        vessel.getAverageSpeed() + " knots"
+        );
+    }
+}
+
+class VesselUtil {
     // Maintain List of Vessel objects
     private List<Vessel> vesselList;
 
@@ -48,7 +129,7 @@ import java.util.Scanner;
     // Method to retrieve by ID
      public Vessel getVesselByID(String id){
         for(Vessel vessel : vesselList){
-            if(vessel.getVesselId().equalsIgnoreCase(id)){
+            if(vessel.getVesselId().equals(id)){
                 return vessel;
             }
         }
@@ -58,7 +139,6 @@ import java.util.Scanner;
 
      // Get High Performance Vessels (Highest Speed)
      public List<Vessel> getHighPerformanceVessels() {
-
          List<Vessel> result = new ArrayList<>();
 
          if (vesselList.isEmpty()) {
@@ -137,73 +217,19 @@ class Vessel {
     public void setVesselType(String vesselType) {
         this.vesselType = vesselType;
     }
+
+    @Override
+    public String toString(){
+        return vesselId + " | " +
+                vesselName + " | " +
+                vesselType + " | " +
+                averageSpeed + " knots";
+    }
 }
 
 public class OceanFleetApp {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        VesselUtil vesselUtil = new VesselUtil();
-
-        // Step 1: Number of vessels
-        System.out.print("Enter number of vessels: ");
-        int count = Integer.parseInt(scanner.nextLine());
-
-        // Step 2: Input vessel details
-        for (int i = 1; i <= count; i++) {
-
-            System.out.println("\nEnter vessel details (format: id:name:speed:type)");
-            String input = scanner.nextLine();
-
-            // Step 3: Parse input
-            String[] data = input.split(":");
-
-            String id = data[0];
-            String name = data[1];
-            double speed = Double.parseDouble(data[2]);
-            String type = data[3];
-
-            // Step 4: Create object
-            Vessel vessel = new Vessel(id, name, speed, type);
-
-            // Step 5: Store object
-            vesselUtil.addVesselPerformance(vessel);
-        }
-
-        // Step 6: Retrieve vessel by ID
-        System.out.print("\nEnter Vessel ID to search: ");
-        String searchId = scanner.nextLine();
-
-        Vessel found = vesselUtil.getVesselByID(searchId);
-
-        if (found != null) {
-            System.out.println("\nVessel Found:");
-            printFormatted(found);
-        } else {
-            System.out.println("Vessel not found.");
-        }
-
-        // Step 7: Display high-performance vessels
-        System.out.println("\nHigh Performance Vessel(s):");
-        List<Vessel> highList = vesselUtil.getHighPerformanceVessels();
-
-        if (highList.isEmpty()) {
-            System.out.println("No vessels available.");
-        } else {
-            for (Vessel vessel : highList) {
-                printFormatted(vessel);
-            }
-        }
-
-        scanner.close();
-    }
-
-    // Helper method for formatted output
-    private static void printFormatted(Vessel vessel) {
-        System.out.println(
-                vessel.getVesselId() + " | " +
-                        vessel.getVesselName() + " | " +
-                        vessel.getVesselType() + " | " +
-                        vessel.getAverageSpeed() + " knots"
-        );
+        UserInterface ui = new UserInterface();
+        ui.start();
     }
 }
