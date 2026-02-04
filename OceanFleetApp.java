@@ -1,12 +1,14 @@
 
 /**
- * OceanFleetApp UC2 - Store Vessel Records Using List
+ * OceanFleetApp UC3 - Retrieve Vessel by Vessel ID
  *
  * This Store multiple vessel records efficiently in memory.
  * And display vessel records efficiently.
+ * The final outcome of this use case is, we will have new feature for
+ * searching vessel by its id.
  *
  * @Developer
- * @version2.0
+ * @version3.0
  * */
 
 import java.util.ArrayList;
@@ -43,6 +45,17 @@ import java.util.Scanner;
             System.out.println("Type: " + vessel.getVesselType());
         }
     }
+
+    // Method to retrieve by ID
+     public Vessel getVesselByID(String id){
+        for(Vessel vessel : vesselList){
+            if(vessel.getVesselId().equalsIgnoreCase(id)){
+                return vessel;
+            }
+        }
+
+        return null;
+     }
 }
 
 class Vessel {
@@ -106,7 +119,7 @@ public class OceanFleetApp {
 
         System.out.print("How many vessels do you want to add? ");
         int count = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
 
         for (int i = 1; i <= count; i++) {
 
@@ -132,6 +145,22 @@ public class OceanFleetApp {
 
         System.out.println("\nAll Stored Vessel Records:");
         vesselUtil.displayAllVessels();
+
+        System.out.println("\nSearch Vessel By ID");
+        System.out.print("Enter Vessel ID to search: ");
+        String searchId = scanner.nextLine();
+
+        Vessel foundVessel = vesselUtil.getVesselByID(searchId);
+
+        if (foundVessel != null) {
+            System.out.println("Vessel Found:");
+            System.out.println("ID: " + foundVessel.getVesselId());
+            System.out.println("Name: " + foundVessel.getVesselName());
+            System.out.println("Speed: " + foundVessel.getAverageSpeed());
+            System.out.println("Type: " + foundVessel.getVesselType());
+        } else {
+            System.out.println("Vessel not found with ID: " + searchId);
+        }
 
         scanner.close();
     }
