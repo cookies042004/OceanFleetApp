@@ -1,11 +1,49 @@
+
 /**
- * OceanFleetApp UC1 - Basic Data Model to represent a Vessel
+ * OceanFleetApp UC2 - Store Vessel Records Using List
  *
- * This class will store attributes of vessel details.
+ * This Store multiple vessel records efficiently in memory.
+ * And display vessel records efficiently.
  *
  * @Developer
- * @version1.0
+ * @version2.0
  * */
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+ class VesselUtil {
+    // Maintain List of Vessel objects
+    private List<Vessel> vesselList;
+
+    // Constructor
+    public VesselUtil() {
+        vesselList = new ArrayList<>();
+    }
+
+    // Add Vessel Performance
+    public void addVesselPerformance(Vessel vessel) {
+        vesselList.add(vessel);
+        System.out.println("Vessel added successfully!");
+    }
+
+    // Method to display all vessels
+    public void displayAllVessels() {
+        if (vesselList.isEmpty()) {
+            System.out.println("No vessels available.");
+            return;
+        }
+
+        for (Vessel vessel : vesselList) {
+            System.out.println("----------------------------");
+            System.out.println("ID: " + vessel.getVesselId());
+            System.out.println("Name: " + vessel.getVesselName());
+            System.out.println("Speed: " + vessel.getAverageSpeed());
+            System.out.println("Type: " + vessel.getVesselType());
+        }
+    }
+}
 
 class Vessel {
     // Instance Variables (Encapsulation: kept private)
@@ -61,9 +99,40 @@ class Vessel {
     }
 }
 
-
 public class OceanFleetApp {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        VesselUtil vesselUtil = new VesselUtil();
 
+        System.out.print("How many vessels do you want to add? ");
+        int count = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        for (int i = 1; i <= count; i++) {
+
+            System.out.println("\nEnter details for Vessel " + i);
+
+            System.out.print("Vessel ID: ");
+            String id = scanner.nextLine();
+
+            System.out.print("Vessel Name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Average Speed: ");
+            double speed = scanner.nextDouble();
+            scanner.nextLine();
+
+            System.out.print("Vessel Type: ");
+            String type = scanner.nextLine();
+
+            Vessel vessel = new Vessel(id, name, speed, type);
+
+            vesselUtil.addVesselPerformance(vessel);
+        }
+
+        System.out.println("\nAll Stored Vessel Records:");
+        vesselUtil.displayAllVessels();
+
+        scanner.close();
     }
 }
